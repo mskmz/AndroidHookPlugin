@@ -7,6 +7,7 @@ public class HookEngine {
     try {
       new HookCheckActivity(context).hook();
       new HookReProxyActivity(context).hook();
+      new HookLoaderFullActivity(context).hook();
     } catch (Exception e) {
       e.printStackTrace();
     }

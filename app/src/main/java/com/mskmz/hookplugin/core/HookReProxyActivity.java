@@ -1,11 +1,10 @@
 package com.mskmz.hookplugin.core;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -78,7 +77,13 @@ public class HookReProxyActivity {
                 fIntentField.setAccessible(true);
                 Intent intent = (Intent) fIntentField.get(msg.obj);
                 if (intent.hasExtra(Contance.PROXY_SRC_INTENT)) {
-                  fIntentField.set(msg.obj, intent.getParcelableExtra(Contance.PROXY_SRC_INTENT));
+                  Intent intentSrc = intent.getParcelableExtra(Contance.PROXY_SRC_INTENT);
+                  fIntentField.set(msg.obj, intentSrc);
+                  if (DEBUG) {
+                    Log.d(TAG, "handleMessage: " + intentSrc);
+                    Log.d(TAG, "handleMessage: " + intentSrc.getComponent().getPackageName());
+                    Log.d(TAG, "handleMessage: " + intentSrc.getComponent().getClassName());
+                  }
                 }
               } catch (Exception e) {
                 e.printStackTrace();

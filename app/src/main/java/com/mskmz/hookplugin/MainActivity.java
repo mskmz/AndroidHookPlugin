@@ -3,15 +3,12 @@ package com.mskmz.hookplugin;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import java.io.File;
+import com.mskmz.hookplugin.core.Contance;
 
 import dalvik.system.DexClassLoader;
 
@@ -42,20 +39,8 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void test() {
-    File cache = getDir("pDir", Context.MODE_PRIVATE);
-    if (!cache.exists()) {
-      cache.mkdirs();
-    }
-    File dir = new File("/sdcard/Download/");
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    File file = new File(dir.getAbsolutePath() + File.separator + "p.apk");
-    if (!file.exists()) {
-      if (DEBUG) Log.d(TAG, "test: 类丢失");
-    }
     // 加载Activity
-    ClassLoader c = new DexClassLoader(file.getAbsolutePath(), cache.getAbsolutePath(), null, getClassLoader());
+    ClassLoader c = new DexClassLoader(Contance.getPluginPath(), Contance.getOptimizedDirectory(), null, getClassLoader());
     try {
       if (DEBUG) Log.d(TAG, "test: " + c);
       Class a = c.loadClass("com.mskmz.testdemo.Demo_MainActivity");

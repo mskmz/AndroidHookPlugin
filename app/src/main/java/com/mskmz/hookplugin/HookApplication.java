@@ -1,6 +1,7 @@
 package com.mskmz.hookplugin;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mskmz.hookplugin.core.Contance;
 import com.mskmz.hookplugin.core.HookEngine;
 
 import java.io.File;
@@ -19,11 +21,13 @@ public class HookApplication extends Application {
   //>>>>>>>>>>>>>>>DEBUG配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   private static final String TAG = "HookApplication>>>";
   private static final boolean DEBUG = true;
-
   //<<<<<<<<<<<<<<<DEBUG配置<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  public static HookApplication INSTANCE = null;
+
   @Override
   public void onCreate() {
     super.onCreate();
+    INSTANCE = this;
     HookEngine.Hook(this);
     try {
       loadRes();
@@ -32,20 +36,12 @@ public class HookApplication extends Application {
     }
   }
 
-  private String getPluginPath() {
-    File dir = new File("/sdcard/Download/");
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    File file = new File(dir.getAbsolutePath() + File.separator + "p.apk");
-    return file.getAbsolutePath();
-  }
 
   private void loadRes() throws Exception {
     assetManager = AssetManager.class.newInstance();
 
     // 把插件的路径 给 AssetManager
-    File file = new File(getPluginPath());
+    File file = new File(Contance.getPluginPath());
     if (!file.exists()) {
       throw new FileNotFoundException("没有找到插件包!!");
     }

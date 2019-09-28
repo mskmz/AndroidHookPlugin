@@ -1,32 +1,24 @@
 package com.mskmz.hookplugin.core;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import dalvik.system.BaseDexClassLoader;
 import dalvik.system.DexClassLoader;
 
 //修改Loader 方案一 合并package
-public class HookLoaderFullActivity {
+public class HookMergeDex {
   //---------------DEBUG配置---------------------------------------------------------------------------
   private static final String TAG = "hookLoaderActivity>>>";
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   Context context;
 
-  public HookLoaderFullActivity(Context context) {
+  public HookMergeDex(Context context) {
     this.context = context;
   }
 
@@ -51,7 +43,7 @@ public class HookLoaderFullActivity {
 
     //DexClassLoader
     //使用ClassLoader加载资源包
-    Object oPluginClassLoader = getPluginClassLoader(getPluginPath());
+    Object oPluginClassLoader = getPluginClassLoader(Contance.getPluginPath());
     Object oPluginDexPathList = fClassLoader$DexPathList.get(oPluginClassLoader);
 
     //DexPathList — dexElements
@@ -79,9 +71,7 @@ public class HookLoaderFullActivity {
       }
     }
     fDexPathList$DexElements.set(oAppDexPathList, newElement);
-    if (DEBUG) Log.d(TAG, "hookLoaderActivityFor22: 合并Dex成功");
   }
-
 
 
   private ClassLoader getPluginClassLoader(String path) {
@@ -141,13 +131,13 @@ public class HookLoaderFullActivity {
     return name;
   }
 
-  private String getPluginPath() {
-    File dir = new File("/sdcard/Download/");
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    File file = new File(dir.getAbsolutePath() + File.separator + "p.apk");
-    return file.getAbsolutePath();
-  }
+//  private String getPluginPath() {
+//    File dir = new File("/sdcard/Download/");
+//    if (!dir.exists()) {
+//      dir.mkdirs();
+//    }
+//    File file = new File(dir.getAbsolutePath() + File.separator + "p.apk");
+//    return file.getAbsolutePath();
+//  }
 
 }

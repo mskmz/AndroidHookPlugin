@@ -1,15 +1,9 @@
 package com.mskmz.testdemo;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
-public class Demo_MainActivity extends AppCompatActivity {
+public class Demo_MainActivity extends BaseActivity {
   //>>>>>>>>>>>>>>>DEBUG配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   private static final String TAG = "Demo_MainActivity>>>";
   private static final boolean DEBUG = true;
@@ -22,21 +16,11 @@ public class Demo_MainActivity extends AppCompatActivity {
     if (DEBUG) Log.d(TAG, "onCreate: " + R.layout.plug_activity_main);
     if (DEBUG) Log.d(TAG, "onCreate: " + R.id.btn_plug_jump);
     setContentView(R.layout.plug_activity_main);
-    findViewById(R.id.btn_plug_jump).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        startActivity(new Intent(Demo_MainActivity.this, Demo_TestActivity.class));
-      }
-    });
-  }
-
-  @Override
-  public Resources getResources() {
-    return getApplication().getResources();
-  }
-
-  @Override
-  public AssetManager getAssets() {
-    return getApplication().getAssets();
+//    findViewById(R.id.btn_plug_jump).setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View v) {
+//        startActivity(new Intent(Demo_MainActivity.this, Demo_TestActivity.class));
+//      }
+//    });
   }
 }

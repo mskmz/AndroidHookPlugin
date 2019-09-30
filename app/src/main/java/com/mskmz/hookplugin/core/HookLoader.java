@@ -60,11 +60,13 @@ public class HookLoader {
         int.class,
         cPackageUserState);
 
-    ApplicationInfo oAppliactionInfo = (ApplicationInfo) method.invoke(
+    ApplicationInfo oApplicationInfo = (ApplicationInfo) method.invoke(
         oPackageParse,
         oPackage,
         0,
         oPackageUserState);
+    oApplicationInfo.publicSourceDir = Contance.getPluginPath();
+    oApplicationInfo.sourceDir = Contance.getPluginPath();
 
     //public final LoadedApk getPackageInfoNoCheck(
     //        ApplicationInfo ai,
@@ -81,7 +83,7 @@ public class HookLoader {
     );
     Object oLoadApk = mActivityThread$getPackageInfoNoCheck.invoke(
         oActivityThread,
-        oAppliactionInfo,
+        oApplicationInfo,
         oCompatibilityInfo
     );
     //替换LoadedApk
@@ -107,8 +109,8 @@ public class HookLoader {
     Field fActivityThread$mPackages = cActivityThread.getDeclaredField("mPackages");
     fActivityThread$mPackages.setAccessible(true);
     Map omPackage = (Map) fActivityThread$mPackages.get(oActivityThread);
-    omPackage.put(oAppliactionInfo.packageName, new WeakReference(oLoadApk));
-    if (DEBUG) Log.d(TAG, "hookLoaderFor22: " + oAppliactionInfo.packageName);
+    omPackage.put(oApplicationInfo.packageName, new WeakReference(oLoadApk));
+    if (DEBUG) Log.d(TAG, "hookLoaderFor22: " + oApplicationInfo.packageName);
     if (DEBUG) Log.d(TAG, "hookLoaderFor22: " + oLoadApk);
 
   }

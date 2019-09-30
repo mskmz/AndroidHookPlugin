@@ -15,6 +15,7 @@ import com.mskmz.hookplugin.core.HookEngine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class HookApplication extends Application {
@@ -23,6 +24,9 @@ public class HookApplication extends Application {
   private static final boolean DEBUG = true;
   //<<<<<<<<<<<<<<<DEBUG配置<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   public static HookApplication INSTANCE = null;
+
+  private AssetManager mAssetManager;
+  private Resources mResources;
 
   @Override
   public void onCreate() {
@@ -36,43 +40,29 @@ public class HookApplication extends Application {
     }
   }
 
-
   private void loadRes() throws Exception {
-    assetManager = AssetManager.class.newInstance();
+    Resources srcRes = getResources();
+    mAssetManager = AssetManager.class.newInstance();
+    Method mAssetManager$addAssetPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+    mAssetManager$addAssetPath.invoke(mAssetManager, Contance.getPluginPath());
 
-    // 把插件的路径 给 AssetManager
-    File file = new File(Contance.getPluginPath());
-    if (!file.exists()) {
-      throw new FileNotFoundException("没有找到插件包!!");
-    }
-
-    // 执行此 public final int addAssetPath(String path) 方法，才能把插件的路径添加进去
-    Method method = assetManager.getClass().getDeclaredMethod("addAssetPath", String.class); // 类类型
-    method.setAccessible(true);
-    method.invoke(assetManager, file.getAbsolutePath());
-
-    Resources r = getResources(); // 拿到的是宿主的 配置信息
-
-    // 实例化此方法 final StringBlock[] ensureStringBlocks()
-    Method ensureStringBlocksMethod = assetManager.getClass().getDeclaredMethod("ensureStringBlocks");
-    ensureStringBlocksMethod.setAccessible(true);
-    ensureStringBlocksMethod.invoke(assetManager); // 执行了ensureStringBlocks  string.xml  color.xml   anim.xml 被初始化
-
-    // 特殊：专门加载插件资源
-    resources = new Resources(assetManager, r.getDisplayMetrics(), r.getConfiguration());
-    if (DEBUG) Log.d(TAG, "loadRes: 资源加载成功" + resources);
+    Method mAssetManager$ensure = AssetManager.class.getDeclaredMethod("ensureStringBlocks");
+    mAssetManager$ensure.invoke(mAssetManager, null);
+    //public Resources(AssetManager assets, DisplayMetrics metrics, Configuration config) {
+    mResources = new Resources(
+        mAssetManager,
+        srcRes.getDisplayMetrics(),
+        srcRes.getConfiguration()
+    );
   }
-
-  private Resources resources;
-  private AssetManager assetManager;
 
   @Override
   public Resources getResources() {
-    return resources == null ? super.getResources() : resources;
+    return mResources == null ? super.getResources() : mResources;
   }
 
   @Override
   public AssetManager getAssets() {
-    return assetManager == null ? super.getAssets() : assetManager;
+    return mAssetManager == null ? super.getAssets() : mAssetManager;
   }
 }
